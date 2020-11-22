@@ -13,10 +13,7 @@ class ExtendedYaleFace(td.Dataset):
     def __init__(self,
                  root="data/CroppedYale",
                  image_shape=[32, 32],
-                 form='numpy'):
-
-        assert form in ['numpy', 'torch']
-        self.form = form
+                 flatten=False):
         
         corrputed = [
             "yaleB11_P00A+050E-40.pgm",
@@ -41,6 +38,7 @@ class ExtendedYaleFace(td.Dataset):
 
         self.root = root
         self.image_shape = image_shape
+        self.flatten = flatten
 
         self.image_path = []
         self.labels = []
@@ -65,14 +63,11 @@ class ExtendedYaleFace(td.Dataset):
         label = self.labels[idx]
         img = Image.open(image)
         img = img.resize(self.image_shape)
-        if self.form == "numpy":
-            img_out = np.array(img)
-            img_out = np.expand_dims(img_out, axis=0)
-        elif self.form == "torch":
-            img_out = tv.transforms.ToTensor(img)
-            img_out = img_out.unsqueeze(0)
-        else:
-            raise ValueError("output has to be numpy.ndarray or tensor.Tensor")
+        img_out = tv.transforms.ToTensor()(img)
+
+        # flatten image
+        if self.flatten:
+            img_out = img_out.view(1, -1)
         return img_out, label
 
         
