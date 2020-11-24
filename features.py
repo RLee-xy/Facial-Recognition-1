@@ -4,6 +4,7 @@ import torch.utils.data as td
 
 from sklearn.decomposition import PCA
 from skimage.feature import local_binary_pattern as LBP
+from skimage.feature import hog
 
 ##### PCA 
 def pca_fit(dataset):
@@ -38,3 +39,17 @@ def lbp_transform(dataset):
     X_transformed = np.array(X_transformed)
     return X_transformed
         
+#### HOG
+def hog_transform(dataset):
+    dataloader = td.DataLoader(dataset, batch_size=1, shuffle=False)
+    fd_list = []
+    hog_images = []
+
+    for batch_idx, (X, Y) in enumerate(dataloader):
+        X = X.squeeze().numpy()
+        fd, hog_image = hog(X, orientations=9, pixels_per_cell=(4, 4),
+                            cells_per_block=(2, 2), visualize=True, multichannel=False)
+        fd_list.append(fd)
+        hog_images.append(hog_image)
+
+    return fd_list, hog_images
