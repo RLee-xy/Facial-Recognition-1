@@ -5,6 +5,7 @@ import torch.utils.data as td
 from sklearn.decomposition import PCA
 from skimage.feature import local_binary_pattern as LBP
 from skimage.feature import hog
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
 ##### PCA 
 def pca_fit(dataset):
@@ -53,3 +54,15 @@ def hog_transform(dataset):
         hog_images.append(hog_image)
 
     return fd_list, hog_images
+
+##### LDA 
+def lda_fit(dataset):
+    # lda model
+    lda = LDA()
+    # dataloader
+    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
+    for batch_idx, (X, Y) in enumerate(dataloader):
+        print("Dimension of the batch data is", X.shape)
+        X = X.squeeze().numpy()
+        lda.fit(X,Y)
+    return lda
