@@ -5,7 +5,7 @@ import torch.utils.data as td
 from sklearn.decomposition import PCA
 from skimage.feature import local_binary_pattern as LBP
 from skimage.feature import hog
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.decomposition import LatentDirichletAllocation as LDA
 
 ##### PCA 
 def pca_fit(dataset):
