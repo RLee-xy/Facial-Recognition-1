@@ -58,7 +58,7 @@ def hog_transform(dataset):
 ##### LDA 
 def lda_fit(dataset):
     # lda model
-    lda = LDA()
+    lda = LDA(n_components=5, n_jobs=-1)
     # dataloader
     dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
     for batch_idx, (X, Y) in enumerate(dataloader):
