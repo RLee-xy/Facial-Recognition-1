@@ -64,5 +64,5 @@ def lda_fit(dataset):
     for batch_idx, (X, Y) in enumerate(dataloader):
         print("Dimension of the batch data is", X.shape)
         X = X.squeeze().numpy()
-        lda.fit(X,Y)
+        lda.fit(X)
     return lda
