@@ -66,3 +66,12 @@ def lda_fit(dataset):
         X = X.squeeze().numpy()
         lda.fit(X)
     return lda
+
+def lda_transform(lda, dataset):
+    # dataloader
+    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
+    for batch_idx, (X, Y) in enumerate(dataloader):
+        print("Dimension of the batch data is", X.shape)
+        X = X.squeeze().numpy()
+        X_transformed = lda.transform(X)
+    return X_transformed
