@@ -1,11 +1,27 @@
 import numpy as np
 
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn.model_selection import GridSearchCV
+
 import torch
 import torchvision as tv
 import torch.utils.data as td
 
 import matplotlib.pyplot as plt
 
+
+##### KNN
+def train_knn(X_train, Y_train):
+    model = KNeighborsClassifier()
+    param_grid = {'n_neighbors': [3, 5, 10], 'weights': ['uniform', 'distance'], 'p': [1, 2]}
+    hp_search = GridSearchCV(estimator=model, param_grid=param_grid)
+    hp_search.fit(X_train, Y_train)
+    best_model = hp_search.best_estimator_
+    print("Best parameters:", hp_search.best_params_)
+    return best_model
+
+    
 ##### ResNet
 def train_resnet(trainset, testset, batch_size=128, epochs=100, lr=0.001, show_progress=True):
     # dataloader
