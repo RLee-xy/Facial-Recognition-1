@@ -6,6 +6,7 @@ from sklearn.decomposition import PCA
 from skimage.feature import local_binary_pattern as LBP
 from skimage.feature import hog
 from sklearn.decomposition import LatentDirichletAllocation as LDA
+from sklearn.decomposition import FastICA
 
 ##### PCA 
 def pca_fit(dataset):
@@ -27,7 +28,6 @@ def pca_transform(pca, dataset):
         X = X.squeeze().numpy()
         X_transformed = pca.transform(X)
     return X_transformed
-
 ##### LBP
 def lbp_transform(dataset):
     # dataloader
@@ -48,12 +48,12 @@ def hog_transform(dataset):
 
     for batch_idx, (X, Y) in enumerate(dataloader):
         X = X.squeeze().numpy()
-        fd, hog_image = hog(X, orientations=9, pixels_per_cell=(4, 4),
+        fd, hog_image = hog(X, orientations=9, pixels_per_cell=(5, 5),
                             cells_per_block=(2, 2), visualize=True, multichannel=False)
         fd_list.append(fd)
         hog_images.append(hog_image)
 
-    return fd_list, hog_images
+    return np.array(fd_list), hog_images
 
 ##### LDA 
 def lda_fit(dataset):
@@ -74,4 +74,25 @@ def lda_transform(lda, dataset):
         print("Dimension of the batch data is", X.shape)
         X = X.squeeze().numpy()
         X_transformed = lda.transform(X)
+    return X_transformed
+
+##### ICA
+def ica_fit(dataset):
+    # pca model
+    ica = FastICA(n_components=150)
+    # dataloader
+    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
+    for batch_idx, (X, Y) in enumerate(dataloader):
+        print("Dimension of the batch data is", X.shape)
+        X = X.squeeze().numpy()
+        X_train = ica.fit_transform(X)
+    return ica, X_train
+
+def ica_transform(ica, dataset):
+    # dataloader
+    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
+    for batch_idx, (X, Y) in enumerate(dataloader):
+        print("Dimension of the batch data is", X.shape)
+        X = X.squeeze().numpy()
+        X_transformed = ica.transform(X)
     return X_transformed
