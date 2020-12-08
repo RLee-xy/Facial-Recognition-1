@@ -2,7 +2,7 @@ import numpy as np
 
 import sklearn
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, SVC
 
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
@@ -28,16 +28,18 @@ def train_knn(X_train, Y_train):
 ##### SVM
 class SVM_agent:
     def __init__(self):
-        self.agent = LinearSVC(penalty='l2', max_iter=5000, random_state=0)
+        self.agent = SVC()
         self.train_data = []
         self.train_label = []
         self.test_data = []
         self.test_label = []
-        self.params_search = {'C':[1,10,100,1000]}
+        self.params_search = {'C': [0.1, 1, 10, 100, 1000],
+              'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
+              'kernel': ['rbf']}
 
 
     def reset(self):
-        self.agent = LinearSVC()
+        self.agent = SVC()
         self.train_data = []
         self.train_label = []
         self.test_data = []
@@ -70,7 +72,7 @@ class SVM_agent:
         return pred_labels
 
     def hyper_tune(self, dataset, labels):
-        self.agent = LinearSVC()
+        self.agent = SVC()
         if len(dataset.shape) == 3:
             self.train_data = np.array(dataset).reshape((dataset.shape[0], dataset.shape[1] * dataset.shape[2]))
         else:
