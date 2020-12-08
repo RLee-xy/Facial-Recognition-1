@@ -5,7 +5,7 @@ import torch.utils.data as td
 from sklearn.decomposition import PCA
 from skimage.feature import local_binary_pattern as LBP
 from skimage.feature import hog
-from sklearn.decomposition import LatentDirichletAllocation as LDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.decomposition import FastICA
 
 ##### PCA 
@@ -28,17 +28,45 @@ def pca_transform(pca, dataset):
         X = X.squeeze().numpy()
         X_transformed = pca.transform(X)
     return X_transformed
+
+##### LDA 
+def lda_fit(dataset, n_components):
+    # lda model
+    lda = LDA(n_components=n_components)
+    # dataloader
+    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
+    for batch_idx, (X, Y) in enumerate(dataloader):
+        print("Dimension of the batch data is", X.shape)
+        X = X.squeeze().numpy()
+        Y = Y.numpy()
+        lda.fit(X, Y)
+    return lda
+
+def lda_transform(lda, dataset):
+    # dataloader
+    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
+    for batch_idx, (X, Y) in enumerate(dataloader):
+        print("Dimension of the batch data is", X.shape)
+        X = X.squeeze().numpy()
+        X_transformed = lda.transform(X)
+    return X_transformed
+
 ##### LBP
 def lbp_transform(dataset):
     # dataloader
     dataloader = td.DataLoader(dataset, batch_size=1, shuffle=False)
     X_transformed = []
+    hists = []
     for batch_idx, (x, y) in enumerate(dataloader):
         x = x.squeeze().numpy()
         lbp = LBP(x, P=8*3, R=3, method='uniform')
         X_transformed.append(lbp)
+        n_bins = int(lbp.max() + 1)
+        hist, _ = np.histogram(lbp, density=True, bins=n_bins, range=(0, n_bins))
+        hists.append(hist)
     X_transformed = np.array(X_transformed)
-    return X_transformed
+    hists = np.array(hists)
+    return X_transformed, hists
         
 #### HOG
 def hog_transform(dataset):
@@ -55,31 +83,10 @@ def hog_transform(dataset):
 
     return np.array(fd_list), hog_images
 
-##### LDA 
-def lda_fit(dataset):
-    # lda model
-    lda = LDA(n_components=5, n_jobs=-1)
-    # dataloader
-    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
-    for batch_idx, (X, Y) in enumerate(dataloader):
-        print("Dimension of the batch data is", X.shape)
-        X = X.squeeze().numpy()
-        lda.fit(X)
-    return lda
-
-def lda_transform(lda, dataset):
-    # dataloader
-    dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
-    for batch_idx, (X, Y) in enumerate(dataloader):
-        print("Dimension of the batch data is", X.shape)
-        X = X.squeeze().numpy()
-        X_transformed = lda.transform(X)
-    return X_transformed
-
 ##### ICA
 def ica_fit(dataset):
-    # pca model
-    ica = FastICA(n_components=150)
+    # ica model
+    ica = FastICA(n_components=50)
     # dataloader
     dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
     for batch_idx, (X, Y) in enumerate(dataloader):
