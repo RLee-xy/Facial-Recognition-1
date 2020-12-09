@@ -92,7 +92,7 @@ def hog_transform(dataset):
     return np.array(fd_list), hog_images
 
 ##### ICA
-def ica_fit(dataset, n_component=50):
+def ica_fit(dataset, n_component=150):
     # ica model
     ica = FastICA(n_components=n_component)
     flag = False
