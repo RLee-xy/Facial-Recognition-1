@@ -84,16 +84,22 @@ def hog_transform(dataset):
     return np.array(fd_list), hog_images
 
 ##### ICA
-def ica_fit(dataset):
+def ica_fit(dataset, n_component=50):
     # ica model
-    ica = FastICA(n_components=50)
+    ica = FastICA(n_components=n_component)
+    flag = False
     # dataloader
     dataloader = td.DataLoader(dataset, batch_size=dataset.__len__(), shuffle=False)
     for batch_idx, (X, Y) in enumerate(dataloader):
         print("Dimension of the batch data is", X.shape)
         X = X.squeeze().numpy()
-        X_train = ica.fit_transform(X)
-    return ica, X_train
+        try:
+            X_train = ica.fit_transform(X)
+            flag = True
+        except:
+            flag = False
+            pass
+    return ica, flag
 
 def ica_transform(ica, dataset):
     # dataloader
