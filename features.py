@@ -52,7 +52,7 @@ def lda_transform(lda, dataset):
     return X_transformed
 
 ##### LBP
-def lbp_transform(dataset):
+def lbp_transform(dataset, cell=8):
     # dataloader
     dataloader = td.DataLoader(dataset, batch_size=1, shuffle=False)
     X_transformed = []
@@ -62,7 +62,15 @@ def lbp_transform(dataset):
         lbp = LBP(x, P=8*3, R=3, method='uniform')
         X_transformed.append(lbp)
         n_bins = int(lbp.max() + 1)
-        hist, _ = np.histogram(lbp, density=True, bins=n_bins, range=(0, n_bins))
+        n_rows = lbp.shape[0] // cell
+        n_cols = lbp.shape[1] // cell
+        hist = []
+        for i in range(n_rows):
+            for j in range(n_cols):
+                patch = lbp[i*cell:(i+1)*cell, j*cell:(j+1)*cell]
+                h, _ = np.histogram(patch, density=True, bins=n_bins, range=(0, n_bins))
+                hist.append(h)
+        hist = np.concatenate(hist)
         hists.append(hist)
     X_transformed = np.array(X_transformed)
     hists = np.array(hists)
