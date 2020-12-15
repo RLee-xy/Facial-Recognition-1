@@ -1,4 +1,4 @@
-# Facial-Recognition with Different Feature Extractions
+# Facial Recognition with Different Feature Extractions
 Final Project for EN.601.675 Machine Learning (Fall 2020)
 
 Project Mentor: Darius Irani
