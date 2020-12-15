@@ -3,7 +3,7 @@ Final Project for EN.601.675 Machine Learning (Fall 2020)
 
 Project Mentor: Darius Irani
 
-Team Members: Ruixin Li (rli57), Kejia Ren (kren6), Longji Yin (lyin10), Zhongyuan Zheng (zzheng34)
+Team Members: Ruixin Li (rli57), Kejia Ren (kren6), Longji Yin (lyin10), Zhongyuan Zheng (zzheng24)
 
 ## Description
 
