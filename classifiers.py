@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
 
 import torch
+torch.manual_seed(42)
 import torchvision as tv
 import torch.utils.data as td
 
@@ -28,7 +29,7 @@ def train_knn(X_train, Y_train):
 ##### SVM
 class SVM_agent:
     def __init__(self):
-        self.agent = SVC()
+        self.agent = SVC(random_state=42)
         self.train_data = []
         self.train_label = []
         self.test_data = []
@@ -39,7 +40,7 @@ class SVM_agent:
 
 
     def reset(self):
-        self.agent = SVC()
+        self.agent = SVC(random_state=42)
         self.train_data = []
         self.train_label = []
         self.test_data = []
@@ -72,7 +73,7 @@ class SVM_agent:
         return pred_labels
 
     def hyper_tune(self, dataset, labels):
-        self.agent = SVC()
+        self.agent = SVC(random_state=42)
         if len(dataset.shape) == 3:
             self.train_data = np.array(dataset).reshape((dataset.shape[0], dataset.shape[1] * dataset.shape[2]))
         else:
